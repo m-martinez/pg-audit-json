@@ -1,0 +1,11 @@
+{
+  "name": "pg-audit-json",
+  "abstract": "An audit history tracker",
+  "version": "1.0.0",
+  "maintainer": "Marco Martinez <m-martinez@users.noreply.github.com>",
+  "license": "postgresql",
+  "meta-spec": {
+    "version": "1.0.0",
+    "url": "http://pgxn.org/meta/spec.txt"
+  }
+}

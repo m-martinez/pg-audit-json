@@ -1,0 +1,4 @@
+comment = 'An audit history tracker'
+default_version = '1.0.0'
+module_pathname = '$libdir/pg-audit-json'
+relocatable = true

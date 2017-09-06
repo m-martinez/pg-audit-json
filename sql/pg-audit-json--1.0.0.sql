@@ -10,7 +10,10 @@
 --   http://wiki.postgresql.org/wiki/Audit_trigger
 -- but has been completely rewritten.
 --
--- Should really be converted into a relocatable EXTENSION, with control and upgrade files.
+
+
+-- complain if script is sourced in psql, rather than via CREATE EXTENSION
+\echo Use "CREATE EXTENSION pg-audit-json" to load this file. \quit
 
 --
 -- Implements missing "-" JSONB operators that are available in HSTORE
