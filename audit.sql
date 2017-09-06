@@ -4,7 +4,7 @@
 -- This file should be generic and not depend on application roles or structures,
 -- as it's being listed here:
 --
---    https://wiki.postgresql.org/wiki/Audit_trigger_91plus    
+--    https://wiki.postgresql.org/wiki/Audit_trigger_91plus
 --
 -- This trigger was originally based on
 --   http://wiki.postgresql.org/wiki/Audit_trigger
@@ -12,7 +12,91 @@
 --
 -- Should really be converted into a relocatable EXTENSION, with control and upgrade files.
 
-CREATE EXTENSION IF NOT EXISTS hstore;
+--
+-- Implements missing "-" JSONB operators that are available in HSTORE
+--
+
+--
+-- Implements "jsonb - text[]" operation to remove a list of keys
+--
+-- Note: This method will be a supported operation of PostgreSQL 10
+--
+-- Credit:
+-- http://schinckel.net/2014/09/29/adding-json%28b%29-operators-to-postgresql/
+--
+CREATE OR REPLACE FUNCTION "jsonb_minus" ( "left" jsonb, "keys" TEXT[] )
+  RETURNS jsonb
+	LANGUAGE sql
+  IMMUTABLE
+  STRICT
+AS $$
+  SELECT
+    CASE
+      WHEN "left" ?| "keys"
+        THEN COALESCE(
+          (SELECT ('{' || string_agg(to_json("key")::text || ':' || "value", ',') || '}')
+             FROM jsonb_each("left")
+            WHERE "key" <> ALL ("keys")),
+          '{}'
+        )::jsonb
+      ELSE "left"
+    END
+$$;
+
+CREATE OPERATOR - (
+  LEFTARG = jsonb,
+  RIGHTARG = text[],
+  PROCEDURE = jsonb_minus
+);
+
+COMMENT ON FUNCTION jsonb_minus(jsonb, text[]) IS 'Delete specificed keys';
+
+COMMENT ON OPERATOR - (jsonb, text[]) IS 'Delete specified keys';
+
+--
+-- Implements "jsonb - jsonb" operation to recursively delete matching pairs.
+--
+-- Credit:
+-- http://coussej.github.io/2016/05/24/A-Minus-Operator-For-PostgreSQLs-JSONB/
+--
+
+CREATE OR REPLACE FUNCTION "jsonb_minus" ( "left" jsonb, "right" jsonb )
+	RETURNS jsonb
+	LANGUAGE SQL
+  IMMUTABLE
+  STRICT
+AS $$
+  SELECT
+    COALESCE(json_object_agg(
+      "key",
+      CASE
+        -- if the value is an object and the value of the second argument is
+        -- not null, we do a recursion
+        WHEN jsonb_typeof("value") = 'object' AND "right" -> "key" IS NOT NULL
+        THEN jsonb_minus("value", "right" -> "key")
+        -- for all the other types, we just return the value
+        ELSE "value"
+      END
+    ), '{}')::jsonb
+  FROM
+    jsonb_each("left")
+  WHERE
+    "left" -> "key" <> "right" -> "key"
+    OR "right" -> "key" IS NULL
+$$;
+
+CREATE OPERATOR - (
+	LEFTARG   = jsonb,
+	RIGHTARG  = jsonb,
+	PROCEDURE = jsonb_minus
+);
+
+COMMENT ON FUNCTION jsonb_minus(jsonb, jsonb)
+  IS 'Delete matching pairs in the right argument from the left argument';
+
+COMMENT ON OPERATOR - (jsonb, jsonb)
+  IS 'Delete matching pairs in the right argument from the left argument';
+
 
 CREATE SCHEMA audit;
 REVOKE ALL ON SCHEMA audit FROM public;
@@ -51,8 +135,8 @@ CREATE TABLE audit.logged_actions (
     client_port integer,
     client_query text,
     action TEXT NOT NULL CHECK (action IN ('I','D','U', 'T')),
-    row_data hstore,
-    changed_fields hstore,
+    row_data JSONB,
+    changed_fields JSONB,
     statement_only boolean not null
 );
 
@@ -86,8 +170,8 @@ DECLARE
     audit_row audit.logged_actions;
     include_values boolean;
     log_diffs boolean;
-    h_old hstore;
-    h_new hstore;
+    h_old JSONB;
+    h_new JSONB;
     excluded_cols text[] = ARRAY[]::text[];
 BEGIN
     IF TG_WHEN <> 'AFTER' THEN
@@ -120,18 +204,18 @@ BEGIN
     IF TG_ARGV[1] IS NOT NULL THEN
         excluded_cols = TG_ARGV[1]::text[];
     END IF;
-    
+
     IF (TG_OP = 'UPDATE' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = hstore(OLD.*) - excluded_cols;
-        audit_row.changed_fields =  (hstore(NEW.*) - audit_row.row_data) - excluded_cols;
-        IF audit_row.changed_fields = hstore('') THEN
+        audit_row.row_data = to_jsonb(OLD.*) - excluded_cols;
+        audit_row.changed_fields =  (to_jsonb(NEW.*) - audit_row.row_data) - excluded_cols;
+        IF audit_row.changed_fields = '{}'::JSONB THEN
             -- All changed fields are ignored. Skip this update.
             RETURN NULL;
         END IF;
     ELSIF (TG_OP = 'DELETE' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = hstore(OLD.*) - excluded_cols;
+        audit_row.row_data = to_jsonb(OLD.*) - excluded_cols;
     ELSIF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = hstore(NEW.*) - excluded_cols;
+        audit_row.row_data = to_jsonb(NEW.*) - excluded_cols;
     ELSIF (TG_LEVEL = 'STATEMENT' AND TG_OP IN ('INSERT','UPDATE','DELETE','TRUNCATE')) THEN
         audit_row.statement_only = 't';
     ELSE
@@ -193,8 +277,8 @@ BEGIN
         IF array_length(ignored_cols,1) > 0 THEN
             _ignored_cols_snip = ', ' || quote_literal(ignored_cols);
         END IF;
-        _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' || 
-                 quote_ident(target_table::TEXT) || 
+        _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' ||
+                 quote_ident(target_table::TEXT) ||
                  ' FOR EACH ROW EXECUTE PROCEDURE audit.if_modified_func(' ||
                  quote_literal(audit_query_text) || _ignored_cols_snip || ');';
         RAISE NOTICE '%',_q_txt;
