@@ -1,0 +1,17 @@
+#
+# Development coding style guidelines
+#
+
+# Don't look any further for more editor configurations
+root = true
+
+[*]
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = false
+max_line_length = 80
+trim_trailing_whitespace=true
+
+[Makefile]
+indent_style = tab
