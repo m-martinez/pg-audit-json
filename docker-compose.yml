@@ -1,0 +1,13 @@
+#
+# Sets up development services
+#
+version: "3.0"
+services:
+  db:
+    build: .
+    restart: always
+    ports:
+      - "5432:5432"
+    tmpfs: /var/lib/postgresql/data/
+    volumes:
+      - ./results:/usr/local/src/results
