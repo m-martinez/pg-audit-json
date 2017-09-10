@@ -1,0 +1,37 @@
+CREATE EXTENSION "pg-audit-json";
+-- Remove one key
+SELECT '{"a": 1, "b": 2, "c": 3}'::jsonb - '{a}'::text[];
+     ?column?     
+------------------
+ {"b": 2, "c": 3}
+(1 row)
+
+-- Remove multiple keys
+SELECT '{"a": 1, "b": 2, "c": 3}'::jsonb - '{a,c}'::text[];
+ ?column? 
+----------
+ {"b": 2}
+(1 row)
+
+-- Return deletions from the original document
+SELECT '{"a": 1, "b": 2, "c": 3}'::jsonb - '{"a": 1}'::jsonb;
+     ?column?     
+------------------
+ {"b": 2, "c": 3}
+(1 row)
+
+-- Return changes from the original document
+SELECT '{"a": 1, "b": 2, "c": 3}'::jsonb - '{"a": 1, "b": 99, "c": 3}'::jsonb;
+ ?column? 
+----------
+ {"b": 2}
+(1 row)
+
+-- Return changes from the original document (recursive)
+SELECT '{"a":1, "b":{"c":123, "d":"test"}}'::jsonb
+    - '{"a":1, "b":{"c":321, "d":"test"}}'::jsonb;
+     ?column?      
+-------------------
+ {"b": {"c": 123}}
+(1 row)
+
