@@ -10,7 +10,7 @@ Significant changes made from original work:
 * Usage of JSONB instead of HSTORE
 * Slight table/column name differences
 * INSERT values are stored in the `changed_fields` instead of `row_data` to
-  indicate that a new record is an entire change from nothing.
+  indicate that a new record is an entire change.
 
 
 ## Audit Table Reference
@@ -34,7 +34,7 @@ Column | Type | Not&nbsp;Null | Description
 `application_user` | `TEXT` | | Client-set session application user when this audit event occurred.<br /> This is useful if the application uses its own user-management and authorization system.
 `action` | `ENUM` | &#x2611;  | Action type <br /> `I` = insert <br />`D` = delete<br /> `U` = update<br/>`T` = truncate
 `row_data` | `JSONB` | | Record value. Null for statement-level trigger.<br />For INSERT this is null becuase there was nothing there before.<br /> For DELETE and UPDATE it is the old tuple.
-`changed_fields` | `JSONB` | | New values of fields for INSERT or changed by UPDATE. <br /> Null for DELETE.
+`changed_fields` | `JSONB` | | New values of fields for INSERT or those changed by UPDATE (i.e a diff). <br /> Null for DELETE.
 `statement_only` | `BOOLEAN` | &#x2611;  | `t` if audit event is from an FOR EACH STATEMENT trigger <br /> `f` for FOR EACH ROW
 
 
