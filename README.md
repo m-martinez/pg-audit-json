@@ -4,11 +4,12 @@ JSON type, a recursive diff will be generated for changed fields.
 
 This trigger is a fork of [2ndQuadrant's audit trigger][1] implementation.
 
-For more information:
-  * https://github.com/2ndQuadrant/audit-trigger
-  * http://wiki.postgresql.org/wiki/Audit_trigger_91plus
-
 [1]: https://github.com/2ndQuadrant/audit-trigger
+
+Significant changes made from original work:
+* Usage of JSONB instead of HSTORE
+* Slight table/column name differences
+
 
 ## Audit Table Reference
 
@@ -114,4 +115,12 @@ More information about PostgreSQL extensions
 Remember to update the version tags in the following files:
   * META.json
   * pg-audit-json.control
+
+
+## Credits
+
+* https://github.com/2ndQuadrant/audit-trigger
+* http://wiki.postgresql.org/wiki/Audit_trigger_91plus
+* http://coussej.github.io/2016/05/24/A-Minus-Operator-For-PostgreSQLs-JSONB/
+* http://schinckel.net/2014/09/29/adding-json%28b%29-operators-to-postgresql/
 
