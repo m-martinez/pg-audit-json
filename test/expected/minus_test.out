@@ -46,3 +46,4 @@ SELECT '{"a":1, "b":{"c":321, "d":"test"}}'::jsonb
  {"b": {"c": 321}}
 (1 row)
 
+DROP EXTENSION "pg-audit-json";
