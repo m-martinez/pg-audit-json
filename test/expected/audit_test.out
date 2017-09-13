@@ -18,9 +18,9 @@ SELECT audit.audit_table('foo', true, true, '{id}'::text[]);
 --- insert
 INSERT INTO foo (a, b, c) VALUES (1, 2, 3) RETURNING id AS record_id \gset
 SELECT row_data, changed_fields FROM audit.log ORDER BY id DESC LIMIT 1;
-         row_data         | changed_fields 
---------------------------+----------------
- {"a": 1, "b": 2, "c": 3} | 
+ row_data |      changed_fields      
+----------+--------------------------
+          | {"a": 1, "b": 2, "c": 3}
 (1 row)
 
 --- update
@@ -45,9 +45,9 @@ SELECT row_data, changed_fields FROM audit.log ORDER BY id DESC LIMIT 1;
 --- insert
 INSERT INTO foo (a, b, c) VALUES (4, 5, 6) RETURNING id AS record_id \gset
 SELECT row_data, changed_fields FROM audit.log ORDER BY id DESC LIMIT 1;
-         row_data         | changed_fields 
---------------------------+----------------
- {"a": 4, "b": 5, "c": 6} | 
+ row_data |      changed_fields      
+----------+--------------------------
+          | {"a": 4, "b": 5, "c": 6}
 (1 row)
 
 --- add column to table and update record

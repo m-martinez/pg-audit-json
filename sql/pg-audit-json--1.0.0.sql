@@ -175,9 +175,9 @@ COMMENT ON COLUMN audit.log.application_user_name
 COMMENT ON COLUMN audit.log.action
   IS 'Action type; I = insert, D = delete, U = update, T = truncate';
 COMMENT ON COLUMN audit.log.row_data
-  IS 'Record value. Null for statement-level trigger. For INSERT this is the new tuple. For DELETE and UPDATE it is the old tuple.';
+  IS 'Record value. Null for statement-level trigger. For INSERT this is null. For DELETE and UPDATE it is the old tuple.';
 COMMENT ON COLUMN audit.log.changed_fields
-  IS 'New values of fields changed by UPDATE. Null except for row-level UPDATE events.';
+  IS 'New values of fields for INSERT or changed by UPDATE. Null for DELETE';
 COMMENT ON COLUMN audit.log.statement_only
   IS '''t'' if audit event is from an FOR EACH STATEMENT trigger, ''f'' for FOR EACH ROW';
 
@@ -233,7 +233,9 @@ BEGIN
     excluded_cols = TG_ARGV[1]::TEXT[];
   END IF;
 
-  IF (TG_OP = 'UPDATE' AND TG_LEVEL = 'ROW') THEN
+  IF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
+    audit_row.changed_fields = to_jsonb(NEW.*) - excluded_cols;
+  ELSIF (TG_OP = 'UPDATE' AND TG_LEVEL = 'ROW') THEN
     audit_row.row_data = to_jsonb(OLD.*) - excluded_cols;
     audit_row.changed_fields =
       (to_jsonb(NEW.*) - audit_row.row_data) - excluded_cols;
@@ -243,8 +245,6 @@ BEGIN
     END IF;
   ELSIF (TG_OP = 'DELETE' AND TG_LEVEL = 'ROW') THEN
     audit_row.row_data = to_jsonb(OLD.*) - excluded_cols;
-  ELSIF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
-    audit_row.row_data = to_jsonb(NEW.*) - excluded_cols;
   ELSIF (TG_LEVEL = 'STATEMENT' AND
          TG_OP IN ('INSERT','UPDATE','DELETE','TRUNCATE')) THEN
     audit_row.statement_only = 't';
