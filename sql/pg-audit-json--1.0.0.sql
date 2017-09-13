@@ -313,7 +313,7 @@ BEGIN
     IF array_length(ignored_cols,1) > 0 THEN
         _ignored_cols_snip = ', ' || quote_literal(ignored_cols);
     END IF;
-    _q_txt = 'CREATE TRIGGER audit_trigger_row'
+    _q_txt = 'CREATE TRIGGER audit_trigger_row '
              'AFTER INSERT OR UPDATE OR DELETE ON ' ||
              target_table::TEXT ||
              ' FOR EACH ROW EXECUTE PROCEDURE audit.if_modified_func(' ||
