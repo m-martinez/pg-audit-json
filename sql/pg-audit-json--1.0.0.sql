@@ -204,6 +204,7 @@ BEGIN
   END IF;
 
   audit_row = ROW(
+    nextval('audit.log_id_seq'),                    -- id
     TG_TABLE_SCHEMA::TEXT,                          -- schema_name
     TG_TABLE_NAME::TEXT,                            -- table_name
     TG_RELID,                                       -- relation OID for faster searches
