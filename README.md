@@ -92,8 +92,8 @@ This extension allows you to define two optional settings in your application
 runtime, which can be set as follows:
 
 ```sql
-> set_config('applicaiton_name', 'my.fancy.app', true)
-> set_config('application_user_name', 'jdoe@foo.com', true)
+> SET LOCAL audit.application_name = 'my.fancy.app';
+> SET LOCAL audit.application_user_name = 'jdoe@foo.com';
 ```
 
 Setting | Description
