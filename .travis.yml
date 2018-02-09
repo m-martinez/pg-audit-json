@@ -7,6 +7,9 @@ services:
 
 addons:
   postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-server-dev-9.6
 
 before_script:
   - make
