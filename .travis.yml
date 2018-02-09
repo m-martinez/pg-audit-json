@@ -11,7 +11,7 @@ addons:
     packages:
       - postgresql-server-dev-9.6
 
-before_script:
+install:
   - sudo make install
 
 script:
