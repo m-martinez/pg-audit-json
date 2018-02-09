@@ -20,7 +20,7 @@ DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
 TESTS        = $(wildcard test/sql/*.sql)
 REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
-REGRESS_OPTS = --inputdir=test --outputdir=regression
+REGRESS_OPTS = --inputdir=test
 PG_CONFIG    = pg_config
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\\.| 9\\.0" && echo no || echo yes)
 
@@ -31,7 +31,8 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
 
 # TODO: This appears to copy the extenion file twice
-DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
+#DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
+DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN = sql/$(EXTENSION)--$(EXTVERSION).sql
 endif
 

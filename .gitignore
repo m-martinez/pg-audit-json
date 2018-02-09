@@ -1,3 +1,5 @@
 # Genrated by pg regress
-regression/
+results/
+regression.diff
+regression.out
 

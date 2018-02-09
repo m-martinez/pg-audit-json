@@ -12,5 +12,4 @@ addons:
       - postgresql-server-dev-9.6
 
 script:
-  - sudo make install
   - sudo make installcheck
