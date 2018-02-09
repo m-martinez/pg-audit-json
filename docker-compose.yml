@@ -3,7 +3,7 @@
 #
 version: "3.0"
 services:
-  postgres:
+  postgresql:
     # Don't use alpine because we need diffutils
     build: .
     restart: always

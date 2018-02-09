@@ -9,4 +9,4 @@ install:
   - sudo docker-compose build
 
 script:
-  - sudo docker-compose run --rm postgresql make installcheck PGHOST=postgres PGUSER=postgres
+  - sudo docker-compose run --rm postgresql make installcheck PGHOST=postgresql PGUSER=postgres
