@@ -62,10 +62,10 @@ In your postgres shell, activate the extension using:
 > CREATE EXTENSION "pg-audit-json";
 ```
 
-To  run the tests:
+To  run the tests (replace PGHOST and PGUSER with your settings):
 
 ```
-> make installcheck
+> make installcheck PGHOST=pgserver PGUSER=pguser
 ```
 
 ## Usage

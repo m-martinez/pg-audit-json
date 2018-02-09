@@ -20,10 +20,7 @@ DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
 TESTS        = $(wildcard test/sql/*.sql)
 REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
-REGRESS_OPTS = --inputdir=test
-# These are not included in this extension
-#DOCS         = $(wildcard doc/*.md)
-#MODULES      = $(patsubst %.c,%,$(wildcard src/*.c))
+REGRESS_OPTS = --inputdir=test --outputdir=regression
 PG_CONFIG    = pg_config
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\\.| 9\\.0" && echo no || echo yes)
 

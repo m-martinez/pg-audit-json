@@ -3,11 +3,10 @@
 #
 version: "3.0"
 services:
-  db:
+  postgres:
+    # Don't use alpine because we need diffutils
     build: .
     restart: always
-    ports:
-      - "5432:5432"
     tmpfs: /var/lib/postgresql/data/
     volumes:
-      - ./results:/usr/local/src/results
+      - ./regression:/usr/local/src/regression

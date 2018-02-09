@@ -1,0 +1,16 @@
+# Global Config
+language: python
+sudo: required
+
+services:
+  - postgres
+
+addons:
+	postgres: "9.6"
+
+before_script:
+	- make
+	- make install
+
+script:
+	- make installcheck
