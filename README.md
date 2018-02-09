@@ -77,13 +77,13 @@ audit.log table. Here are a few exapmles:
 
 ```sql
 > -- A simple table
-> SELECT audit.audit_table("mytable");
+> SELECT audit.audit_table('mytable');
 >
 > -- A schema-qualified table
-> SELECT audit.audit_table("myschema"."mytable");
+> SELECT audit.audit_table('myschema.mytable');
 >
 > -- Ignore columns "foo" and "bar"
-> SELECT audit.audit_table("mytable", true, true, "{foo,bar}");
+> SELECT audit.audit_table('mytable', true, true, '{foo,bar}');
 ```
 
 ### Setting application runtime variables
