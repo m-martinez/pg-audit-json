@@ -48,7 +48,6 @@ To install:
 ```
 > git clone git@github.com:m-martinez/pg-audit-json
 > cd pg-audit-json
-> make
 > make install
 ```
 

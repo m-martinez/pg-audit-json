@@ -9,5 +9,5 @@ RUN apk --update add make diffutils
 
 WORKDIR /usr/local/src
 COPY . .
-RUN make && make install
+RUN make install
 
