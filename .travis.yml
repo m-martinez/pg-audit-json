@@ -3,10 +3,10 @@ language: python
 sudo: required
 
 services:
-  - postgres
+  - postgresql
 
 addons:
-  postgres: "9.6"
+  postgresql: "9.6"
 
 before_script:
   - make
