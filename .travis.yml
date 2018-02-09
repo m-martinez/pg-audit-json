@@ -10,7 +10,7 @@ addons:
 
 before_script:
   - make
-	- make install
+  - make install
 
 script:
-	- make installcheck
+  - make installcheck
