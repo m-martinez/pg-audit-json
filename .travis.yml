@@ -3,10 +3,14 @@ language: python
 sudo: required
 
 services:
-  - docker
+  - postgresql
 
-install:
-  - sudo docker-compose build
+addons:
+  postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-server-dev-9.6
 
 script:
-  - sudo docker-compose run --rm postgresql make installcheck PGHOST=postgresql PGUSER=postgres
+  - sudo make install
+  - sudo make installcheck
