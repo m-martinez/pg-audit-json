@@ -8,5 +8,7 @@ services:
     build: .
     restart: always
     tmpfs: /var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
     volumes:
       - ./regression:/usr/local/src/regression
