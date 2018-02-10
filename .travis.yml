@@ -16,4 +16,4 @@ script:
 
 # pg_regress only prints to files, so we need to print out contents on failure
 after_failure:
-  - cat $TRAVIS_BUILD_DIR/regression.diffs
+  - cat /home/travis/build/m-martinez/pg-audit-json/regression.diffs
