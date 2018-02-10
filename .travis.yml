@@ -13,3 +13,6 @@ addons:
 
 script:
   - sudo make installcheck PGHOST=localhost PGUSER=postgres
+
+after_failure:
+  - cat "$TRAVIS_BUILD_DIR/regression.diffs"
