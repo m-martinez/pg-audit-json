@@ -12,4 +12,4 @@ addons:
       - postgresql-server-dev-9.6
 
 script:
-  - sudo make installcheck
+  - sudo make installcheck PGHOST=localhost PGUSER=postgres
