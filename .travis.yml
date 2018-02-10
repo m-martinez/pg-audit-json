@@ -14,5 +14,6 @@ addons:
 script:
   - sudo make installcheck PGHOST=localhost PGUSER=postgres
 
+# pg_regress only prints to files, so we need to print out contents on failure
 after_failure:
-  - cat "$TRAVIS_BUILD_DIR/regression.diffs"
+  - cat $TRAVIS_BUILD_DIR/regression.diffs

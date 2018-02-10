@@ -11,4 +11,4 @@ services:
     expose:
       - "5432"
     volumes:
-      - ./regression:/usr/local/src/regression
+      - .:/usr/local/src
