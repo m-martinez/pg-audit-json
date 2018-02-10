@@ -1,3 +1,6 @@
+[![Build
+Status](https://travis-ci.org/m-martinez/pg-audit-json.svg?branch=master)](https://travis-ci.org/m-martinez/pg-audit-json)
+
 A simple, customizable table audit system for PostgreSQL implemented using
 triggers and JSONB for storing diffs. Additionally, if any column is also a
 JSON type, a recursive diff will be generated for changed fields.
