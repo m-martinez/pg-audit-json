@@ -185,6 +185,11 @@ CREATE INDEX log_relid_idx ON audit.log(relid);
 CREATE INDEX log_action_tstamp_tx_stm_idx ON audit.log(action_tstamp_stm);
 CREATE INDEX log_action_idx ON audit.log(action);
 
+--
+-- Allow the user of the extension to create a backup of the audit log data
+--
+SELECT pg_catalog.pg_extension_config_dump('audit.log', '');
+
 CREATE OR REPLACE FUNCTION audit.if_modified_func()
 RETURNS TRIGGER
 LANGUAGE plpgsql

@@ -48,10 +48,10 @@ Requirements:
 
 To install:
 
-```
-> git clone git@github.com:m-martinez/pg-audit-json
-> cd pg-audit-json
-> make install
+```bash
+git clone git@github.com:m-martinez/pg-audit-json
+cd pg-audit-json
+make install
 ```
 
 It is highly recommended that you only install this extension using a
@@ -61,13 +61,13 @@ be using to interact the database.
 In your postgres shell, activate the extension using:
 
 ```sql
-> CREATE EXTENSION "pg-audit-json";
+CREATE EXTENSION "pg-audit-json";
 ```
 
 To  run the tests (replace PGHOST and PGUSER with your settings):
 
-```
-> make installcheck PGHOST=pgserver PGUSER=pguser
+```bash
+make installcheck PGHOST=pgserver PGUSER=pguser
 ```
 
 ## Usage
@@ -78,14 +78,14 @@ To track a user table, use the `audit.audit_table` function as the ONWER of the
 audit.log table. Here are a few exapmles:
 
 ```sql
-> -- A simple table
-> SELECT audit.audit_table('mytable');
->
-> -- A schema-qualified table
-> SELECT audit.audit_table('myschema.mytable');
->
-> -- Ignore columns "foo" and "bar"
-> SELECT audit.audit_table('mytable', true, true, '{foo,bar}');
+-- A simple table
+SELECT audit.audit_table('mytable');
+
+-- A schema-qualified table
+SELECT audit.audit_table('myschema.mytable');
+
+-- Ignore columns "foo" and "bar"
+SELECT audit.audit_table('mytable', true, true, '{foo,bar}');
 ```
 
 ### Setting application runtime variables
@@ -94,14 +94,34 @@ This extension allows you to define two optional settings in your application
 runtime, which can be set as follows:
 
 ```sql
-> SET LOCAL audit.application_name = 'my.fancy.app';
-> SET LOCAL audit.application_user_name = 'jdoe@foo.com';
+SET LOCAL audit.application_name = 'my.fancy.app';
+SET LOCAL audit.application_user_name = 'jdoe@foo.com';
 ```
 
 Setting | Description
 --- | ---
 `application_name` | The name of the application that will be trigger audit events
 `appliation_user_name` | The effective applicaiton user
+
+
+### pg_dump
+
+This extension is configured to allow `pg_dump` of the audit log data for
+situations where you would like to keep backups of application data.
+
+
+### Upgrading
+
+If you already have this plugin installed in your system and would like to
+install any recent updates, do either the following:
+
+```sql
+-- Use the latest
+ALTER EXTENSION "pg-audit-json" UPDATE;
+
+-- Or if you want to be more specific
+ALTER EXTENSION "pg-audit-json" UPDATE TO '1.0.1';
+```
 
 
 ## Contributing
@@ -127,4 +147,3 @@ Remember to update the version tags in the following files:
 * http://wiki.postgresql.org/wiki/Audit_trigger_91plus
 * http://coussej.github.io/2016/05/24/A-Minus-Operator-For-PostgreSQLs-JSONB/
 * http://schinckel.net/2014/09/29/adding-json%28b%29-operators-to-postgresql/
-

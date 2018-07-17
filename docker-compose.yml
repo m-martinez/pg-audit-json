@@ -4,11 +4,12 @@
 version: "3.0"
 services:
   postgresql:
-    # Don't use alpine because we need diffutils
     build: .
     restart: always
-    tmpfs: /var/lib/postgresql/data/
-    expose:
-      - "5432"
+    ports:
+      - "5432:5432"
     volumes:
       - .:/usr/local/src
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
