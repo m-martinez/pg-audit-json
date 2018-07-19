@@ -8,8 +8,6 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    tmpfs: /var/lib/postgresql/data
     volumes:
       - .:/usr/local/src
-      - pgdata:/var/lib/postgresql/data
-volumes:
-  pgdata:
