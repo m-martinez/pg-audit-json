@@ -11,3 +11,4 @@ WORKDIR /usr/local/src
 COPY . .
 RUN make install
 
+RUN echo "CREATE EXTENSION \"pg-audit-json\";" > /docker-entrypoint-initdb.d/000-initdb.sql
