@@ -74,8 +74,8 @@ make installcheck PGHOST=pgserver PGUSER=pguser
 
 ### Tracking a database table
 
-To track a user table, use the `audit.audit_table` function as the ONWER of the
-audit.log table. Here are a few exapmles:
+To track a user table, use the `audit.audit_table` function as the OWNER of the
+audit.log table. Here are a few examples:
 
 ```sql
 -- A simple table
@@ -100,8 +100,8 @@ SET LOCAL audit.application_user_name = 'jdoe@foo.com';
 
 Setting | Description
 --- | ---
-`application_name` | The name of the application that will be trigger audit events
-`appliation_user_name` | The effective applicaiton user
+`application_name` | The name of the application that will trigger audit events
+`appliation_user_name` | The effective application user
 
 
 ### pg_dump
