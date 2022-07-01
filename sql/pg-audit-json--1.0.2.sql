@@ -220,8 +220,8 @@ BEGIN
     statement_timestamp(),                          -- action_tstamp_stm
     clock_timestamp(),                              -- action_tstamp_clk
     txid_current(),                                 -- transaction ID
-    current_setting('audit.application_name', true),      -- client application
-    current_setting('audit.application_user_name', true), -- client user name
+    current_setting('application_name', true),      -- client application
+    current_setting('application_user_name', true), -- client user name (doesn't seem to be valid at all!)
     inet_client_addr(),                             -- client_addr
     inet_client_port(),                             -- client_port
     current_query(),                                -- top-level query or queries
